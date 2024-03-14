@@ -24,12 +24,13 @@ jobs:
           severity: 'CRITICAL,HIGH'
           output: 'trivy-results.sarif'
       - name: Parse Trivy scan results
-        id: parse-results
+        if: success() || failure()
         run: |
           vulnerabilities=$(trivy exit-code -o template --template "{{ .ExitCode }}" trivy-results.sarif)
           echo "::set-output name=vulnerabilities::$vulnerabilities"
       - name: Comment vulnerabilities on PR
         uses: mshick/add-pr-comment@v2
+        if: success() || failure()
         with:
           message: |
             Trivy scan found ${{ steps.parse-results.outputs.vulnerabilities }} vulnerabilities in the image.
