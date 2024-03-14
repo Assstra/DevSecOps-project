@@ -26,11 +26,15 @@ jobs:
       - name: Parse Trivy scan results
         if: success() || failure()
         run: |
-          vulnerabilities=$(trivy exit-code -o template --template "{{ .ExitCode }}" trivy-results.sarif)
+          vulnerabilities=$(jq -r '.[].Vulnerabilities | length' trivy_results.json)
           echo "::set-output name=vulnerabilities::$vulnerabilities"
       - name: Comment vulnerabilities on PR
-        uses: mshick/add-pr-comment@v2
-        if: success() || failure()
+        uses: actions/github-script@v4
         with:
-          message: |
-            Trivy scan found ${{ steps.parse-results.outputs.vulnerabilities }} vulnerabilities in the image.
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const prNumber = context.payload.pull_request.number;
+            const vulnerabilities = '${{ steps.parse-results.outputs.vulnerabilities }}';
+            const comment = `Trivy scan found ${vulnerabilities} vulnerabilities in the image.`;
+            github.issues.createComment({ owner, repo, issue_number: prNumber, body: comment });
