@@ -27,8 +27,9 @@ jobs:
         if: success() || failure()
         run: |
           vulnerabilities=$(jq -c '.[]' trivy-results.json)
-          echo "::set-output name=vulnerabilities::$vulnerabilities"
+          echo "vulnerabilities=$vulnerabilities" >> $GITHUB_OUTPUT
       - name: Comment vulnerabilities on PR
+        if: success() || failure()
         uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
