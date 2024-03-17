@@ -1,7 +1,7 @@
-falcosidekick:                                                                                                                                                                             │
-│   config:                                                                                                                                                                                  │
-│     discord:                                                                                                                                                                               │
-│       icon: ""                                                                                                                                                                             │
-│       minimumpriority: notice                                                                                                                                                              │
-│       webhookurl: https://discord.com/api/webhooks/1216821765553262762/0834pqCk_7C8w3xXaZu_biBv-08iRqHgWsefLlroJG7GRCITIufHq3nBAIWG_suDRJTZ                                                │
-│   enabled: true
+falcosidekick:
+  config:
+    discord:
+      icon: ""
+      minimumpriority: notice
+      webhookurl: https://discord.com/api/webhooks/1216821765553262762/0834pqCk_7C8w3xXaZu_biBv-08iRqHgWsefLlroJG7GRCITIufHq3nBAIWG_suDRJTZ
+  enabled: true
