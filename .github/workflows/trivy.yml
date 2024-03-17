@@ -26,7 +26,7 @@ jobs:
       - name: Parse Trivy scan results
         if: success() || failure()
         run: |
-          vulnerabilities=$(jq -c '.[]' trivy-results.json | length' trivy-results.json)
+          vulnerabilities=$(jq -c '.[]' trivy-results.json)
           echo "::set-output name=vulnerabilities::$vulnerabilities"
       - name: Comment vulnerabilities on PR
         uses: actions/github-script@v4
