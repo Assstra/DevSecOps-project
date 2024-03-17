@@ -17,25 +17,14 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'docker.io/my-organization/my-app:${{ github.sha }}'
-          format: 'json'
           exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-          output: 'trivy-results.json'
-      - name: Parse Trivy scan results
-        if: success() || failure()
-        run: |
-          vulnerabilities=$(jq -c '.[]' trivy-results.json)
-          echo "vulnerabilities=$vulnerabilities" >> $GITHUB_OUTPUT
-      - name: Comment vulnerabilities on PR
-        if: success() || failure()
-        uses: actions/github-script@v4
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { owner, repo } = context.repo;
-            const prNumber = context.payload.pull_request.number;
-            const vulnerabilities = '${{ steps.parse-results.outputs.vulnerabilities }}';
-            const comment = `Trivy scan found ${vulnerabilities} vulnerabilities in the image.`;
-            github.issues.createComment({ owner, repo, issue_number: prNumber, body: comment });
+          sarif_file: 'trivy-results.sarif'
