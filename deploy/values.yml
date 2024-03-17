@@ -1,0 +1,18 @@
+# Override helm/values.yml to match my configuration
+
+image:
+  repository: ghcr.io/mmoreiradj/dog-api
+  tag: latest
+
+# Disable HTTPS for now
+ingress:
+  annotations: {}
+  hosts:
+    - host: api.dog.araimbault.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+env:
+  databaseUrl: postgresql://dog-api:dog-api@dog-api-postgresql/dog-api?schema=public
